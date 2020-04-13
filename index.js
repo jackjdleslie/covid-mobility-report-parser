@@ -28,15 +28,15 @@ JSDOM.fromFile(input)
     const country = document.querySelector("span.cls_003");
     const average = document.querySelectorAll("span.cls_009");
 
+    const rawValues = document.querySelectorAll("span.cls_013,span.cls_016,div.cls_014 span.cls_014");
+    const cleanValues = Array.from(rawValues).map((sector) => sector.innerHTML).filter((sector) => sector !== "*");
+
     logUpdate(`Parsing ${input}...`);
 
     const data = Array.from(areas).reduce((obj, area, index) => {
       const name = area.innerHTML;
-      const rawValues = document.querySelectorAll("span.cls_013,span.cls_016");
-
-      const values = Array.from(rawValues)
+      const values = cleanValues
         .slice(index * 6, (index + 1) * 6)
-        .map((sector) => sector.innerHTML);
 
       const value = {
         "Retail & recreation": values[0],
