@@ -26,6 +26,7 @@ JSDOM.fromFile(input)
     const areas = document.querySelectorAll("span.cls_012");
     const dateRange = document.querySelectorAll("span.cls_011");
     const country = document.querySelector("span.cls_003");
+    const average = document.querySelectorAll("span.cls_009");
 
     logUpdate(`Parsing ${input}...`);
 
@@ -52,12 +53,22 @@ JSDOM.fromFile(input)
       };
     }, {});
 
+    const noAreas = areas.length === 2;
+
     const result = {
       country: country.innerHTML.trim(),
       startDate: dateRange[0].innerHTML,
       endDate: dateRange[2].innerHTML,
-      numberOfAreas: areas.length,
-      data,
+      numberOfAreas: noAreas ? 0 : areas.length,
+      average: {
+        "Retail & recreation": average[0].innerHTML,
+        "Grocery & pharmacy": average[1].innerHTML,
+        Parks: average[2].innerHTML,
+        "Transit stations": average[3].innerHTML,
+        Workplace: average[4].innerHTML,
+        Residential: average[5].innerHTML,
+      },
+      data: noAreas ? [] : data
     };
 
     writeFile(output, JSON.stringify(result, null, 2))
