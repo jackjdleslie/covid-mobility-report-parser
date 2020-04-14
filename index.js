@@ -1,7 +1,7 @@
-const fs = require("fs");
-const util = require("util");
-const logUpdate = require("log-update");
-const { JSDOM } = require("jsdom");
+const fs = require('fs');
+const util = require('util');
+const logUpdate = require('log-update');
+const { JSDOM } = require('jsdom');
 
 const writeFile = util.promisify(fs.writeFile);
 
@@ -9,11 +9,11 @@ const writeFile = util.promisify(fs.writeFile);
 const input = process.argv[2];
 
 if (!input) {
-  console.error("usage: node index.js <input.html>");
+  console.error('usage: node index.js <input.html>');
   process.exit();
 }
 
-const output = input.replace("html", "json");
+const output = input.replace('html', 'json');
 
 logUpdate(`Reading ${input}...`);
 
@@ -23,26 +23,28 @@ JSDOM.fromFile(input)
       window: { document },
     } = dom;
 
-    const areas = document.querySelectorAll("span.cls_012");
-    const dateRange = document.querySelectorAll("span.cls_011");
-    const country = document.querySelector("span.cls_003");
-    const average = document.querySelectorAll("span.cls_009");
+    const areas = document.querySelectorAll('span.cls_012');
+    const dateRange = document.querySelectorAll('span.cls_011');
+    const country = document.querySelector('span.cls_003');
+    const average = document.querySelectorAll('span.cls_009');
 
-    const rawValues = document.querySelectorAll("span.cls_013,span.cls_016,div.cls_014 span.cls_014");
-    const cleanValues = Array.from(rawValues).map((sector) => sector.innerHTML).filter((sector) => sector !== "*");
+    const rawValues = document.querySelectorAll('span.cls_013,span.cls_016,div.cls_014 span.cls_014');
+    const cleanValues = Array.from(rawValues)
+      .map((sector) => sector.innerHTML)
+      .filter((sector) => sector !== '*');
 
     logUpdate(`Parsing ${input}...`);
 
     const data = Array.from(areas).reduce((obj, area, index) => {
       const name = area.innerHTML;
       const values = cleanValues
-        .slice(index * 6, (index + 1) * 6)
+        .slice(index * 6, (index + 1) * 6);
 
       const value = {
-        "Retail & recreation": values[0],
-        "Grocery & pharmacy": values[1],
+        'Retail & recreation': values[0],
+        'Grocery & pharmacy': values[1],
         Parks: values[2],
-        "Transit stations": values[3],
+        'Transit stations': values[3],
         Workplace: values[4],
         Residential: values[5],
       };
@@ -61,14 +63,14 @@ JSDOM.fromFile(input)
       endDate: dateRange[2].innerHTML,
       numberOfAreas: noAreas ? 0 : areas.length,
       average: {
-        "Retail & recreation": average[0].innerHTML,
-        "Grocery & pharmacy": average[1].innerHTML,
+        'Retail & recreation': average[0].innerHTML,
+        'Grocery & pharmacy': average[1].innerHTML,
         Parks: average[2].innerHTML,
-        "Transit stations": average[3].innerHTML,
+        'Transit stations': average[3].innerHTML,
         Workplace: average[4].innerHTML,
         Residential: average[5].innerHTML,
       },
-      data: noAreas ? [] : data
+      data: noAreas ? [] : data,
     };
 
     writeFile(output, JSON.stringify(result, null, 2))
