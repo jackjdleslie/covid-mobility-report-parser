@@ -28,7 +28,8 @@ JSDOM.fromFile(input)
     const country = document.querySelector('span.cls_003');
     const average = document.querySelectorAll('span.cls_009');
 
-    const rawValues = document.querySelectorAll('span.cls_013,span.cls_016,div.cls_014 span.cls_014');
+    const rawValues = document
+      .querySelectorAll('span.cls_013,span.cls_016,div.cls_014 span.cls_014');
     const cleanValues = Array.from(rawValues)
       .map((sector) => sector.innerHTML)
       .filter((sector) => sector !== '*');
